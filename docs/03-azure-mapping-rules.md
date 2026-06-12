@@ -88,7 +88,17 @@ Examples:
 
 # Scenario Mapping
 
-## AZ-03 — Scenario Shall Map to a Test Case
+## AZ-03 — Feature Classification Shall Be Available to Naming Strategies
+
+Feature classification metadata may be consumed by naming strategies when generating Azure DevOps artifacts.
+
+Examples:
+
+- Domain
+- Subdomain
+- Feature Path
+- 
+## AZ-04 — Scenario Shall Map to a Test Case
 
 Each Scenario shall generate one Azure Test Case.
 
@@ -107,7 +117,7 @@ Generate invoice
 
 ---
 
-## AZ-04 — Scenario Titles Shall Remain Business Readable
+## AZ-05 — Scenario Titles Shall Remain Business Readable
 
 Generated Test Case titles shall prioritize readability.
 
@@ -133,7 +143,7 @@ Naming conventions are defined separately in:
 
 # Scenario Outline Mapping
 
-## AZ-05 — Scenario Outline Shall Map to a Parameterized Test Case
+## AZ-06 — Scenario Outline Shall Map to a Parameterized Test Case
 
 Scenario Outlines may consume one or more Datasets generated from Examples blocks.
 
@@ -150,13 +160,16 @@ Then status code response should be <status>
 ↓
 
 ```text
-Test Case
-Shared Parameters
+Scenario Outline
+      ↓
+Parameterized Test Case
+      ↓
+Dataset(s)
 ```
 
 ---
 
-## AZ-06 — Example Variables Shall Become Parameters
+## AZ-07 — Example Variables Shall Become Parameters
 
 Example placeholders shall be transformed into Azure parameters.
 
@@ -176,9 +189,7 @@ Example:
 
 # Examples Mapping
 
-# Examples Mapping
-
-## AZ-07 — Examples Shall Generate Datasets
+## AZ-08 — Examples Shall Generate Datasets
 
 Each Examples block shall be represented as a Dataset within the Canonical Model.
 
@@ -201,9 +212,17 @@ Examples: QA Dataset
 }
 ```
 
+## Dataset Strategy
+
+Datasets are considered a platform-independent concept.
+
+Azure Shared Parameters are one possible representation of a Dataset.
+
+The Canonical Model shall represent Datasets independently from Azure DevOps concepts.
+
 ---
 
-## AZ-08 — Tagged Datasets Shall Preserve Their Metadata
+## AZ-09 — Tagged Datasets Shall Preserve Their Metadata
 
 Tags applied to Examples blocks shall be preserved.
 
@@ -229,7 +248,7 @@ Examples: QA Dataset
 
 ---
 
-## AZ-09 — Shared Parameter Datasets Shall Generate Azure Shared Parameters
+## AZ-10 — Shared Parameter Datasets Shall Generate Azure Shared Parameters
 
 Datasets explicitly tagged as shared parameter sets shall generate Azure Shared Parameters.
 
@@ -248,13 +267,13 @@ InvoiceDataset
 
 ---
 
-## AZ-10 — Non-Shared Datasets Shall Generate Local Parameters
+## AZ-11 — Non-Shared Datasets Shall Generate Local Parameters
 
 Datasets without a shared parameter designation shall generate local Test Case parameters.
 
 ---
 
-## AZ-11 — Multiple Examples Shall Generate Independent Datasets
+## AZ-12 — Multiple Examples Shall Generate Independent Datasets
 
 Each Examples block shall be represented independently.
 
@@ -277,7 +296,7 @@ UAT Dataset
 
 # Step Mapping
 
-## AZ-12 — Given, When and Then Shall Be Preserved
+## AZ-13 — Given, When and Then Shall Be Preserved
 
 The Azure translation shall preserve step intent.
 
@@ -303,7 +322,7 @@ Then generated invoice should exist
 
 ---
 
-## AZ-13 — Step Order Shall Be Preserved
+## AZ-14 — Step Order Shall Be Preserved
 
 The execution order defined in Gherkin shall be preserved in Azure.
 
@@ -311,7 +330,7 @@ The execution order defined in Gherkin shall be preserved in Azure.
 
 # Reusable Step Mapping
 
-## AZ-14 — Reusable Steps Shall Generate Shared Steps
+## AZ-15 — Reusable Steps Shall Generate Shared Steps
 
 Reusable Canonical Model steps may be translated into Azure Shared Steps.
 
@@ -323,7 +342,7 @@ Examples:
 
 ---
 
-## AZ-15 — Shared Step Ownership Belongs to Azure
+## AZ-16 — Shared Step Ownership Belongs to Azure
 
 The Canonical Model shall not contain Azure-specific concepts.
 
@@ -345,7 +364,7 @@ Shared Step
 
 # Parameter Mapping
 
-## AZ-16 — Parameters Shall Use Azure Syntax
+## AZ-17 — Parameters Shall Use Azure Syntax
 
 Example variables shall be translated into Azure parameter notation.
 
@@ -363,15 +382,17 @@ Example:
 
 ---
 
-## AZ-17 — Shared Parameters Shall Be Reusable
+## AZ-18 — Shared Parameters Shall Be Reusable
 
-Generated Shared Parameters should be reusable across multiple Azure Test Cases whenever possible.
+Only datasets explicitly designated as shared parameter sets shall generate Azure Shared Parameters.
+
+Azure translators shall not infer shared parameter usage automatically.
 
 ---
 
 # Traceability
 
-## AZ-18 — Feature Traceability Shall Be Preserved
+## AZ-19 — Feature Traceability Shall Be Preserved
 
 Generated Test Cases shall maintain traceability to their originating Feature.
 
@@ -384,7 +405,7 @@ Recommended metadata:
 
 ---
 
-## AZ-19 — Scenario Traceability Shall Be Preserved
+## AZ-20 — Scenario Traceability Shall Be Preserved
 
 Consumers shall be able to identify the originating Scenario for every generated Test Case.
 
@@ -392,7 +413,7 @@ Consumers shall be able to identify the originating Scenario for every generated
 
 # Provider Independence
 
-## AZ-20 — Azure Concepts Shall Not Leak Into the Canonical Model
+## AZ-21 — Azure Concepts Shall Not Leak Into the Canonical Model
 
 Concepts such as:
 
@@ -405,14 +426,6 @@ shall remain Azure-specific implementation details.
 Equivalent concepts may exist in other platforms.
 
 The Canonical Model shall remain provider-neutral.
-
-## Dataset Strategy
-
-Datasets are considered a platform-independent concept.
-
-Azure Shared Parameters are one possible representation of a Dataset.
-
-The Canonical Model shall represent Datasets independently from Azure DevOps concepts.
 
 ---
 
