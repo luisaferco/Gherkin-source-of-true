@@ -309,6 +309,16 @@ Canonical:
 
 ```json
 {
+  "action": "setBillingParameter",
+
+  "parameter": "PROCESS_INTERVAL_USAGE_REQUEST",
+
+  "value": "YES",
+
+  "context": {
+    "productType": "MISO"
+  },
+
   "datasource": "CONVERT_INTERVAL_PRODUCT"
 }
 ```
