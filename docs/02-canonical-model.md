@@ -371,7 +371,7 @@ This ensures provider independence and portability across test management platfo
 
 ---
 
-## CM-14 — External Test Case References Shall Be Preserved
+## CM-11 — External Test Case References Shall Be Preserved
 
 Scenario tags matching the pattern:
 
@@ -400,7 +400,124 @@ When the tag is absent:
 The Canonical Model preserves the reference but does not define creation or update behavior.
 
 ---
+## CM-12 — DataTables Shall Preserve Their Structure
 
+DataTables shall preserve their original tabular representation within the Canonical Model.
+
+The parser may classify DataTables into one of the following kinds:
+
+| Kind | Description |
+|------|-------------|
+| kv | Two-column key/value table |
+| table | Multi-row business data |
+| datasource | Datasource aliases |
+| unknown | Parser unable to classify |
+
+Examples:
+
+### Key/Value DataTable
+
+Feature:
+
+```gherkin
+When the customer submits an application with:
+| Age          | 30   |
+| Income       | 5000 |
+| Credit Score | 750  |
+```
+
+Canonical:
+
+```json
+{
+  "datatable": {
+    "kind": "kv",
+    "rows": [
+      {
+        "key": "Age",
+        "value": 30
+      },
+      {
+        "key": "Income",
+        "value": 5000
+      },
+      {
+        "key": "Credit Score",
+        "value": 750
+      }
+    ]
+  }
+}
+```
+
+---
+
+### Tabular DataTable
+
+Feature:
+
+```gherkin
+When a customer purchases products
+| sku    | quantity |
+| ABC123 | 2        |
+| XYZ987 | 1        |
+```
+
+Canonical:
+
+```json
+{
+  "datatable": {
+    "kind": "table",
+    "headers": [
+      "sku",
+      "quantity"
+
+    ],
+
+    "rows": [
+      {
+        "sku": "ABC123",
+        "quantity": 2
+      },
+      {
+        "sku": "XYZ987",
+        "quantity": 1
+      }
+    ]
+
+  }
+}
+```
+
+---
+
+### Datasource References
+
+Feature:
+
+```gherkin
+Then generated invoice should be updated
+| datasource | INVOICE_BY_ACCOUNT |
+```
+
+Canonical:
+
+```json
+{
+  "datasources": [
+    "INVOICE_BY_ACCOUNT"
+  ]
+}
+```
+
+
+The Canonical Model preserves the DataTable structure.
+
+Consumers are responsible for translating DataTables into provider-specific artifacts.
+
+
+---
 # Consumer Responsibilities
 
 ## Azure DevOps
@@ -410,8 +527,6 @@ Consumes the Canonical Model and transforms generic concepts into Azure DevOps a
 - Test Cases
 - Shared Steps
 - Shared Parameters
-- Test Suites
-- Test Plan Structures
 
 ---
 
