@@ -90,7 +90,6 @@ At a minimum, the Canonical Model should represent:
 - Data Tables
 - Datasource References
 - Endpoint References
-- EDI References
 
 ---
 
@@ -279,21 +278,6 @@ Avoid:
 
 ---
 
-## EDI Messages
-
-Preferred:
-
-```json
-{
-  "ediMessage": {
-    "utility": "UTL_COMD",
-    "transactionCode": "867",
-    "purposeCode": "00"
-  }
-}
-```
-
----
 
 # Canonical Model Rules
 
@@ -417,7 +401,6 @@ Consumes the Canonical Model to execute:
 
 - Queries
 - API Calls
-- EDI Messages
 - Assertions
 
 ---
