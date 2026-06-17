@@ -185,8 +185,7 @@ Current scope includes:
 - Data Tables
 - Query Registry
 - Endpoint Registry
-- EDI Resolution
-
+  
 Out of scope for the initial version:
 
 - Doc Strings
