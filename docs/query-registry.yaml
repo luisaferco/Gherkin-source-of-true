@@ -1,0 +1,17 @@
+# Query Registry Example
+queries:
+  ACCOUNT_BY_METER_UTILITY:
+    description: Retrieves utility account information using meter type and utility
+    path: /Database/Bse_Core/AccountProduct/Select/ACCOUNT_BY_METER_UTILITY.sql
+
+  INVOICE_BY_ACCOUNT:
+    description: Retrieves generated invoices for an account
+    path: /Database/Bse_Core/EnergyUsage/Select/INVOICE_BY_ACCNUMBER.sql
+
+  CREDIT_CARD_BY_CUSTOMER:
+    description: Retrieves all credit cards associated with a customer
+    path: /DBQueries/Bse_core/CreditCard/Select/ALL_BY_CUSTOMER_ID.sql
+
+  CUSTOMER_BY_ACCOUNT:
+    description: Retrieves customer information associated with an account
+    path: /DBQueries/Bse_core/Customer/Select/CUSTOMER_BY_ACCOUNT_ID.sql
