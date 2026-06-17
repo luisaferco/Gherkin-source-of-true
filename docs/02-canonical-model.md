@@ -62,7 +62,7 @@ The Canonical Model is responsible for:
 
 - Normalizing Gherkin structures
 - Preserving traceability
-- Resolving aliases
+- Preserving logical references
 - Representing datasets
 - Representing reusable artifacts
 - Providing a stable schema for consumers
@@ -119,86 +119,9 @@ Examples: QA Dataset
 # Example Canonical Representation
 
 ```json
-{
-  "feature": {
-
-    "name": "Invoice Generation",
-
-    "classification": {
-
-      "domain": "INV",
-
-      "subdomain": "USG",
-
-      "featurePath": "INV/USG"
-    },
-
-    "tags": [
-      "billing"
-    ]
-  },
-
-  "background": {
-
-    "reusable": true,
-
-    "steps": [
-
-      {
-        "keyword": "Given",
-        "text": "Billing API service is available"
-      },
-
-      {
-        "keyword": "And",
-        "text": "utility account exists"
-      }
-    ]
-  },
-
-  "scenario": {
-
-    "name": "Generate invoice",
-
-    "generatedIdentifier": null,
-
-    "type": "outline",
-
-    "steps": [
-
-      {
-        "keyword": "When",
-        "text": "invoice generation endpoint is invoked",
-
-        "endpoint": "invoice_generation"
-      },
-
-      {
-        "keyword": "Then",
-        "text": "status code response should be <status>"
-      },
-
-      {
-        "keyword": "And",
-        "text": "generated invoice should exist",
-
-        "datasource": "INVOICE_BY_ACCOUNT"
-      }
-    ],
-
-    "datasets": [
-
-      {
-        "name": "QA Dataset",
-
-        "rows": [
-          {
-            "status": 200
-          }
-        ]
-      }
-    ]
-  }
+{ "feature": {},
+ "background": {},
+ "scenarios": []
 }
 ```
 
@@ -235,6 +158,47 @@ Canonical Representation:
 ```
 
 This metadata allows consumers to generate platform-specific naming conventions while keeping Feature Files business readable.
+
+---
+
+## Background Classification
+
+Backgrounds may represent different reusable concepts.
+
+Examples:
+
+Setup Preconditions
+Environment Configuration
+
+Canonical Example:
+
+{
+  "background": {
+    "classification": "setup"
+  }
+}
+
+or
+
+{
+  "background": {
+    "classification": "environment"
+  }
+}
+
+The Canonical Model preserves the semantic intent of the Background.
+
+Consumers are responsible for translating these classifications into platform-specific artifacts.
+
+Example:
+
+setup
+   ↓
+Shared Step
+
+environment
+   ↓
+Predecessor Work Item
 
 ---
 
@@ -278,6 +242,19 @@ Avoid:
 
 ---
 
+## Datasets
+
+```json
+
+{ "datasets":
+       [
+       { "name": "InvoiceStatus",
+        "rows": [ { "status": 200 }
+        ]
+       }
+       ]
+}
+```
 
 # Canonical Model Rules
 
@@ -303,7 +280,6 @@ Examples:
 
 - Datasources
 - Endpoints
-- Templates
 
 ---
 
@@ -315,7 +291,6 @@ Examples:
 
 - SQL file locations
 - Endpoint URLs
-- Template file paths
 
 ---
 
@@ -378,6 +353,21 @@ Examples:
 - Feature Path
 
 This metadata may be consumed by downstream platforms to generate identifiers, folders, suites or naming conventions.
+
+---
+
+CM-10 — Canonical Model Shall Preserve Dataset Semantics
+
+Datasets shall be represented independently of platform-specific parameter concepts.
+
+The Canonical Model shall not contain platform-specific concepts such as:
+
+Shared Parameters
+Local Parameters
+
+Consumers are responsible for translating datasets into platform-specific parameter artifacts.
+
+This ensures provider independence and portability across test management platforms.
 
 ---
 
