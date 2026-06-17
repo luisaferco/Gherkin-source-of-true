@@ -1,3 +1,4 @@
+@Payment
 Feature: Credit Card Application Approval
 
   As a customer
@@ -13,7 +14,7 @@ Feature: Credit Card Application Approval
       | Income       | 5000    |
       | Credit Score | 750     |
     Then the application should be approved
-    |/DBQueries/CreditCard/Select/ALL_BY_CUSTOMER_ID.sql|
+    | datasource | CREDIT_CARD_BY_CUSTOMER |
     And a credit card account should be created
     And a welcome email should be sent to the customer
 
@@ -23,7 +24,7 @@ Feature: Credit Card Application Approval
       | Income       | 5000    |
       | Credit Score | 550     |
     Then the application should be rejected
-    |/DBQueries/CreditCard/Select/ALL_BY_CUSTOMER_ID.sql|
+    | datasource | CREDIT_CARD_BY_CUSTOMER |
     And the rejection reason should be "Credit score below minimum threshold"
 
   Scenario Outline: Send application for manual review
@@ -32,7 +33,7 @@ Feature: Credit Card Application Approval
       | Income       | <Income>      |
       | Credit Score | <CreditScore> |
     Then the application status should be "Pending Review"
-    |/DBQueries/CreditCard/Select/ALL_BY_CUSTOMER_ID.sql|
+    | datasource | CREDIT_CARD_BY_CUSTOMER |
     And the application should be assigned to a credit analyst
 
     Examples:
