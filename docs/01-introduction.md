@@ -69,7 +69,7 @@ The Canonical Model is an intermediate representation generated from Feature Fil
 Responsibilities:
 
 - Normalize Gherkin structures
-- Resolve aliases
+- Preserve aliases
 - Preserve traceability
 - Provide a stable integration contract
 
