@@ -1,0 +1,187 @@
+{
+  "feature": {
+    "name": "Credit Card Application Approval",
+    "description": [
+      "As a customer",
+      "I want to apply for a credit card",
+      "So that I can access a line of credit"
+    ],
+
+    "tags": [
+      "Payment"
+    ],
+
+    "classification": {
+      "domain": "INV",
+      "subdomain": "PYM",
+      "path": "INV-Invoices/PYM"
+    }
+  },
+
+  "background": {
+    "classification": "setup",
+    "reusable": true,
+    "steps": [
+      {
+        "keyword": "Given",
+        "text": "the customer is on the credit card application page"
+      }
+    ]
+  },
+
+  "scenarios": [
+    {
+
+      "testCaseId": null,
+      "name": "Approve application for an eligible customer",
+      "type": "scenario",
+      "tags": [],
+      "steps": [
+        {
+          "keyword": "When",
+          "text": "the customer submits an application with:",
+          "datatable": {
+            "kind": "kv",
+            "rows": [
+              {
+                "key": "Age",
+                "value": 30
+              },
+              {
+                "key": "Income",
+                "value": 5000
+              },
+              {
+                "key": "Credit Score",
+                "value": 750
+              }
+            ]
+          }
+        },
+        {
+          "keyword": "Then",
+          "text": "the application should be approved",
+          "datasources": [
+            "CREDIT_CARD_BY_CUSTOMER"
+          ]
+        },
+        {
+          "keyword": "And",
+          "text": "a credit card account should be created"
+        },
+        {
+          "keyword": "And",
+          "text": "a welcome email should be sent to the customer"
+        }
+      ]
+    },
+
+    {
+
+      "testCaseId": null,
+      "name": "Reject application due to low credit score",
+      "type": "scenario",
+      "tags": [],
+      "steps": [
+        {
+          "keyword": "When",
+          "text": "the customer submits an application with:",
+          "datatable": {
+            "kind": "kv",
+            "rows": [
+              {
+                "key": "Age",
+                "value": 30
+              },
+              {
+                "key": "Income",
+                "value": 5000
+              },
+              {
+                "key": "Credit Score",
+                "value": 550
+              }
+            ]
+          }
+
+        },
+
+        {
+
+          "keyword": "Then",
+          "text": "the application should be rejected",
+          "datasources": [
+            "CREDIT_CARD_BY_CUSTOMER"
+          ]
+        },
+        {
+          "keyword": "And",
+          "text": "the rejection reason should be \"Credit score below minimum threshold\""
+        }
+      ]
+    },
+    {
+      "testCaseId": null,
+      "name": "Send application for manual review",
+      "type": "outline",
+      "tags": [],
+      "steps": [
+        {
+          "keyword": "When",
+          "text": "the customer submits an application with:",
+          "datatable": {
+            "kind": "kv",
+            "rows": [
+              {
+                "key": "Age",
+                "value": "<Age>"
+              },
+              {
+                "key": "Income",
+                "value": "<Income>"
+              },
+              {
+                "key": "Credit Score",
+                "value": "<CreditScore>"
+              }
+            ]
+          }
+        },
+        {
+          "keyword": "Then",
+          "text": "the application status should be \"Pending Review\"",
+          "datasources": [
+            "CREDIT_CARD_BY_CUSTOMER"
+          ]
+        },
+        {
+          "keyword": "And",
+          "text": "the application should be assigned to a credit analyst"
+        }
+      ],
+      "datasets": [
+        {
+          "name": null,
+          "shared": false,
+          "rows": [
+            {
+              "Age": 25,
+              "Income": 2500,
+              "CreditScore": 650
+            },
+            {
+              "Age": 30,
+              "Income": 2800,
+              "CreditScore": 620
+            },
+            {
+              "Age": 40,
+              "Income": 3000,
+              "CreditScore": 640
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
