@@ -304,9 +304,7 @@ Example:
 
 ```gherkin
 Given utility account exists
-
 When invoice generation endpoint is invoked
-
 Then generated invoice should exist
 ```
 
@@ -314,9 +312,7 @@ Then generated invoice should exist
 
 ```text
 Given utility account exists
-
 When invoice generation endpoint is invoked
-
 Then generated invoice should exist
 ```
 
@@ -411,23 +407,204 @@ Consumers shall be able to identify the originating Scenario for every generated
 
 ---
 
-# Provider Independence
+## AZ-21 — Datasource References Shall Be Rendered As Validation Context
 
-## AZ-21 — Azure Concepts Shall Not Leak Into the Canonical Model
+Datasource aliases associated with validation steps shall be rendered within the Expected Result section of Azure DevOps Test Steps.
 
-Concepts such as:
+Example:
 
-- Shared Step
-- Shared Parameter
-- Test Suite
+Feature:
 
-shall remain Azure-specific implementation details.
+```gherkin
+Then the application should be approved
 
-Equivalent concepts may exist in other platforms.
+| datasource | CREDIT_CARD_BY_CUSTOMER |
+```
 
-The Canonical Model shall remain provider-neutral.
+Canonical:
+
+```json
+{
+  "keyword": "Then",
+
+  "text": "the application should be approved",
+
+  "datasources": [
+
+    "CREDIT_CARD_BY_CUSTOMER"
+
+  ]
+}
+```
+
+Azure DevOps representation:
+
+| Action                                  | Expected Result                              |
+| --------------------------------------- | -------------------------------------------- |
+| Then the application should be approved | Using datasource:<br>CREDIT_CARD_BY_CUSTOMER |
+
+The Azure Translator may optionally enrich the Expected Result using metadata from the Query Registry.
+
+Example:
+
+| Action                                  | Expected Result                                                                                           |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Then the application should be approved | Using datasource:<br>CREDIT_CARD_BY_CUSTOMER<br><br>Retrieves all credit cards associated with a customer |
 
 ---
+
+## AZ-22 — DataTables Shall Be Rendered According To Their Classification
+
+Canonical DataTables shall be rendered according to their classification.
+
+| Kind       | Azure Representation                                   |
+| ---------- | ------------------------------------------------------ |
+| kv         | Key/Value pairs rendered within the Action             |
+| table      | Tabular representation rendered within the Action      |
+| datasource | Validation context rendered within the Expected Result |
+| unknown    | Translator specific implementation                     |
+
+Example:
+
+Canonical:
+
+```json
+{
+  "datatable": {
+    "kind": "kv",
+    "rows": [
+      {
+        "key": "Age",
+        "value": 30
+      },
+      {
+        "key": "Income",
+        "value": 5000
+      }
+    ]
+  }
+}
+```
+
+Azure Action:
+
+```text
+When the customer submits an application with:
+
+Age = 30
+
+Income = 5000
+```
+
+---
+
+## AZ-23 — Missing Test Case References Shall Create Test Cases
+
+If a Scenario contains:
+
+```json
+{
+  "testCaseId": null
+}
+```
+
+The Azure Translator shall create a new Azure DevOps Test Case.
+
+The generated identifier shall be returned to the synchronization process.
+
+---
+
+## AZ-24 — Existing Test Case References Shall Update Test Cases
+
+If a Scenario contains:
+
+```json
+{
+  "testCaseId": 7231
+}
+```
+
+The Azure Translator shall update the existing Azure DevOps Test Case.
+
+No additional Test Cases shall be created.
+
+---
+
+## AZ-25 — Created Test Cases Shall Be Propagated Back To Feature Files
+
+After successful creation of a Test Case, the generated Azure DevOps identifier shall be propagated back to the originating Scenario.
+
+Feature before synchronization:
+
+```gherkin
+Scenario: Approve application for an eligible customer
+```
+
+Azure response:
+
+```text
+7231
+```
+
+Feature after synchronization:
+
+```gherkin
+@TC-7231
+
+Scenario: Approve application for an eligible customer
+```
+
+This mechanism enables bidirectional synchronization between Feature Files and Azure DevOps while preserving Feature Files as the Source of Truth.
+
+---
+
+## AZ-26 — Azure Translators May Consume Registries
+
+Azure Translators may consume Registry artifacts to enrich generated Azure DevOps representations.
+
+Examples:
+
+* Query Registry
+* Endpoint Registry
+
+Registry resolution shall not modify the Canonical Model.
+
+Example:
+
+Canonical:
+
+```json
+{
+  "datasources": [
+    "CREDIT_CARD_BY_CUSTOMER"
+  ]
+}
+```
+
+Registry:
+
+```yaml
+queries:
+
+  CREDIT_CARD_BY_CUSTOMER:
+
+    description: Retrieves all credit cards associated with a customer
+```
+
+Azure DevOps representation:
+
+```text
+Datasource
+
+CREDIT_CARD_BY_CUSTOMER
+
+Description
+
+Retrieves all credit cards associated with a customer
+```
+
+The Canonical Model remains provider independent while allowing Translators to enhance provider-specific artifacts.
+
 
 ## Summary
 
