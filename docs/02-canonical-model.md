@@ -356,7 +356,7 @@ This metadata may be consumed by downstream platforms to generate identifiers, f
 
 ---
 
-CM-10 — Canonical Model Shall Preserve Dataset Semantics
+## CM-10 — Canonical Model Shall Preserve Dataset Semantics
 
 Datasets shall be represented independently of platform-specific parameter concepts.
 
@@ -368,6 +368,36 @@ Local Parameters
 Consumers are responsible for translating datasets into platform-specific parameter artifacts.
 
 This ensures provider independence and portability across test management platforms.
+
+---
+
+## CM-14 — External Test Case References Shall Be Preserved
+
+Scenario tags matching the pattern:
+
+```gherkin
+@TC:7231
+```
+shall be interpreted as references to externally managed Test Cases.
+
+Canonical Example:
+```json
+{
+  "name": "Approve application for an eligible customer",
+
+  "testCaseId": 7231
+}
+```
+
+When the tag is absent:
+```json
+{
+  "name": "Approve application for an eligible customer",
+
+  "testCaseId": null
+}
+```
+The Canonical Model preserves the reference but does not define creation or update behavior.
 
 ---
 
