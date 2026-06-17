@@ -29,7 +29,7 @@ Prefer:
 ```gherkin
 Given an account is retrieved with:
 
-| datasource | ACCOUNT_BY_METER_UTILITY |
+| datasource | MARKETING_RESPONSE_ACCOUNT_BY_OFFER_CODE |
 ```
 
 The registry is responsible for resolving the datasource alias into its physical implementation.
@@ -46,7 +46,6 @@ Examples:
 
 - Datasources
 - Endpoints
-- Templates
 - Configuration Sets
 
 ---
@@ -59,7 +58,6 @@ Examples:
 
 - SQL Paths
 - Endpoint URLs
-- File Locations
 - Configuration Files
 
 ---
@@ -113,11 +111,52 @@ The architecture currently defines the following registry types:
 |-----------|----------|
 | Query Registry | SQL and datasource definitions |
 | Endpoint Registry | API endpoint definitions |
-| EDI Registry | EDI template definitions |
 | Future Registries | Additional reusable artifacts |
 
 ---
 
+## QR-0X — Query Aliases Shall Express Business Intent
+
+Query aliases shall describe the business meaning of the datasource rather than the physical implementation.
+
+Preferred:
+
+```
+CREDIT_CARD_BY_CUSTOMER
+
+INVOICE_BY_ACCOUNT
+
+ACCOUNT_BY_METER_UTILITY
+```
+Avoid:
+```
+ALL_BY_CUSTOMER_ID
+
+SELECT_ACCOUNT
+
+QUERY_001
+```
+
+Naming standard: 
+```
+<ENTITY>_BY_<BUSINESS_KEY>
+```
+
+Examples:
+```
+ACCOUNT_BY_METER_UTILITY
+
+INVOICE_BY_ACCOUNT
+
+ENERGY_USAGE_BY_ACCOUNT
+
+CUSTOMER_BY_ACCOUNT
+
+CREDIT_CARD_BY_CUSTOMER
+
+```
+
+---
 # Query Registry
 
 ## Purpose
@@ -246,55 +285,6 @@ Endpoint resolution shall be performed through the Endpoint Registry.
 
 ---
 
-# EDI Registry
-
-## Purpose
-
-The EDI Registry provides logical references to EDI message definitions.
-
----
-
-## Existing Strategy
-
-Current EDI generation is driven by:
-
-- utility
-- transactionCode
-- purposeCode
-
-Example:
-
-```gherkin
-When an energy usage is sent from utility
-
-| utility | UTL_COMD |
-| transactionCode | 867 |
-| purposeCode | 00 |
-```
-
-This strategy remains valid and does not currently require alias abstraction.
-
----
-
-## Future Evolution
-
-If EDI complexity increases, a dedicated EDI Registry may be introduced.
-
-Example:
-
-```yaml
-USAGE_867_00:
-
-  utility: UTL_COMD
-
-  transactionCode: 867
-
-  purposeCode: 00
-```
-
-This remains optional.
-
----
 
 # Registry Resolution
 
