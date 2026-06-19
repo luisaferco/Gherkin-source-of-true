@@ -510,11 +510,28 @@ Canonical:
   ]
 }
 ```
+## CM-13 — Canonical Scenarios Shall Preserve Generated Titles
 
+Canonical Scenarios shall preserve the generated Test Case title according to Naming Convention rules.
 
-The Canonical Model preserves the DataTable structure.
+The generated title shall be independent from provider-specific identifiers.
 
-Consumers are responsible for translating DataTables into provider-specific artifacts.
+Example
+
+```gherkin
+Scenario: Approve application for an eligible customer
+```
+
+Canonical
+```json
+{
+   "title":"TC_INV_PYM_001 | Approve application for an eligible customer",
+   "testCaseId":null
+}
+```
+
+Consumers are responsible for using generated titles when creating provider artifacts.
+
 
 
 ---
