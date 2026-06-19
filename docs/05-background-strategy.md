@@ -2,370 +2,210 @@
 
 ## Purpose
 
-This document defines how Gherkin Background sections are represented within the Canonical Model and translated into Azure DevOps artifacts.
+This document describes how Gherkin Backgrounds are represented within the Canonical Model and translated into Azure DevOps artifacts.
 
-According to AEPE Gherkin guidelines, a Given represents a precondition for a Scenario.
+Backgrounds are reusable artifacts shared by all Scenarios within a Feature.
 
-When a precondition applies to all Scenarios within a Feature, it shall be defined as a Background.
-
-Backgrounds may represent different types of preconditions and therefore require different Azure DevOps representations.
+Feature Files remain the Source of Truth.
 
 ---
 
-# Motivation
+# Background Semantics
 
-Gherkin provides a native mechanism for expressing reusable preconditions.
+According to Gherkin semantics, a Background represents preconditions that are true for all Scenarios within a Feature.
 
-Example:
+Examples include:
 
-```gherkin
-Background:
-Given Billing API service is available
-And a valid utility account exists
-```
+* General business rules
+* Environment preparation
+* Configuration prerequisites
+* Service validations
+* Authentication contexts
+* Test data preparation
 
-All Scenarios within the Feature inherit these conditions.
-
-Azure DevOps does not provide a native Background artifact.
-
-A translation strategy is therefore required.
+Backgrounds are represented as reusable predecessor artifacts.
 
 ---
 
-# Background Principles
+# Canonical Representation
 
-## BG-01 — Backgrounds Represent Shared Preconditions
-
-Backgrounds shall represent preconditions shared by all Scenarios within a Feature.
-
-Backgrounds must not describe the primary business behavior under test.
-
-Preferred:
-
-```gherkin
-Background:
-Given Billing API service is available
-And a valid utility account exists
-```
-
-Avoid:
-
-```gherkin
-Background:
-When invoice generation endpoint is invoked
-```
-
----
-
-## BG-02 — Backgrounds Shall Be Reusable
-
-Background definitions shall be represented as reusable artifacts within the Canonical Model.
-
-Example:
+Backgrounds shall be represented within the Canonical Model as follows.
 
 ```json
 {
-  "background": {
-    "reusable": true
-  }
+   "background":{
+
+      "workItemId":null,
+
+      "name":"PRE_INV_PYM_001 | Customer is on credit card application page",
+
+      "reusable":true,
+
+      "predecessor":true,
+
+      "steps":[
+
+         {
+
+            "keyword":"Given",
+
+            "text":"the customer is on the credit card application page"
+
+         }
+
+      ]
+
+   }
+
 }
 ```
 
 ---
 
-## BG-03 — Backgrounds Shall Remain Provider Independent
+## Properties
 
-The Canonical Model shall preserve Background intent without introducing Azure-specific concepts.
-
-Preferred:
-
-```json
-{
-  "reusable": true
-}
-```
-
-Avoid:
-
-```json
-{
-  "sharedStep": true
-}
-```
+| Property    | Description                                       |
+| ----------- | ------------------------------------------------- |
+| workItemId  | Azure DevOps Work Item identifier                 |
+| name        | Predecessor title                                 |
+| reusable    | Indicates that the Background may be reused       |
+| predecessor | Indicates translation into a predecessor artifact |
+| steps       | Gherkin steps composing the Background            |
 
 ---
 
-# Background Classification
+# Naming Convention
 
-AEPE defines two categories of Backgrounds.
+Background names should follow Naming Convention rules.
 
----
-
-## Setup Background
-
-Represents reusable setup activities required before executing scenarios.
-
-Examples:
-
-```gherkin
-Background:
-Given Billing API service is available
-And user is authenticated
-And account exists
-```
-
-Characteristics:
-
-- Validates service availability
-- Retrieves prerequisite data
-- Establishes business context
-- Does not modify environment configuration
-- Does not require deployment or restart
-
----
-
-## Environment Configuration Background
-
-Represents environment preparation activities that modify configuration before testing.
-
-Examples:
-
-```gherkin
-Background:
-Given Consul parameter "EnableInvoiceGeneration" is set to true
-And Billing Service is restarted
-```
-
-Characteristics:
-
-- Changes environment state
-- Updates configuration
-- Enables feature flags
-- Requires deployment or restart activities
-- May require manual execution
-
----
-
-# Azure Translation Strategy
-
-Background translation depends on its classification.
-
----
-
-## BG-04 — Setup Backgrounds Shall Generate Shared Steps
-
-Setup Backgrounds shall generate Azure Shared Steps.
-
-Examples:
-
-- Health checks
-- Login operations
-- Authentication
-- Data retrieval
-- Business preconditions
-- Service validation
-
-Translation:
+Example
 
 ```text
-Background
-      ↓
-Shared Step
-      ↓
-Inserted at beginning of generated Test Cases
+PRE_INV_PYM_001 | Customer is on credit card application page
 ```
-
----
-
-## BG-05 — Environment Configuration Backgrounds Shall Generate Predecessor Work Items
-
-Environment Configuration Backgrounds shall generate dedicated predecessor work items.
-
-Examples:
-
-- Consul updates
-- Feature Toggle changes
-- Infrastructure preparation
-- Service restart activities
-- Deployment requirements
-
-Translation:
-
-```text
-Background
-      ↓
-[PRE] Work Item
-      ↓
-Linked as predecessor
-      ↓
-Business Test Case
-```
-
----
-
-## BG-06 — Background Classification Shall Be Explicit
-
-Backgrounds shall be classified during translation according to the following rules.
-
-| Condition Type | Classification |
-|----------------|---------------|
-| Service validation | Setup Background |
-| Login | Setup Background |
-| Authentication | Setup Background |
-| Data retrieval | Setup Background |
-| Business precondition | Setup Background |
-| Consul configuration | Environment Configuration |
-| Feature Toggle update | Environment Configuration |
-| Service restart | Environment Configuration |
-| Infrastructure modification | Environment Configuration |
-
----
-
-# Shared Step Structure
-
-Setup Backgrounds should generate business-readable Shared Steps.
-
-Example:
-
-Feature:
-
-```gherkin
-Background:
-Given Billing API service is available
-And a valid utility account exists
-```
-
-Azure Shared Step:
-
-Title:
-
-```text
-Invoice Generation Setup
-```
-
-Steps:
-
-```text
-1. Verify Billing API service is available
-2. Retrieve valid utility account
-```
-
----
-
-# Predecessor Work Item Structure
-
-Environment Configuration Backgrounds should generate dedicated predecessor work items.
-
-Example:
-
-Feature:
-
-```gherkin
-Background:
-Given Consul parameter "EnableInvoiceGeneration" is set to true
-And Billing Service is restarted
-```
-
-Azure Work Item:
-
-Title:
-
-```text
-[PRE] Enable Invoice Generation
-```
-
-Description:
-
-```text
-Update Consul parameter:
-EnableInvoiceGeneration=true
-Restart Billing Service
-```
-
----
-
-## BG-07 — Predecessor Work Items Shall Be Reusable
-
-A single predecessor work item may support multiple generated Test Cases.
-
-Duplicate predecessor definitions should be avoided.
 
 ---
 
 # Query Usage Within Backgrounds
 
-Backgrounds may reference Datasources through the Query Registry.
+Backgrounds may reference Datasources through aliases.
 
-Example:
+Example
 
 ```gherkin
 Background:
+
 Given the BillingParameter "PROCESS_INTERVAL_USAGE_REQUEST" is set to "YES" by
-|productType | MISO                     |
-| datasource | CONVERT_INTERVAL_PRODUCT |
+
+| productType | MISO                     |
+| datasource  | CONVERT_INTERVAL_PRODUCT |
 ```
 
-Canonical:
+Canonical
 
 ```json
 {
-  "action": "setBillingParameter",
+   "datatable":{
 
-  "parameter": "PROCESS_INTERVAL_USAGE_REQUEST",
+      "kind":"kv",
 
-  "value": "YES",
+      "rows":[
 
-  "context": {
-    "productType": "MISO"
-  },
+         {
 
-  "datasource": "CONVERT_INTERVAL_PRODUCT"
+            "key":"productType",
+
+            "value":"MISO"
+
+         }
+
+      ]
+
+   },
+
+
+   "datasources":[
+
+      "CONVERT_INTERVAL_PRODUCT"
+
+   ]
+
 }
 ```
 
-Physical query resolution remains the responsibility of the Registry layer.
+Backgrounds preserve datasource aliases.
+
+Registries remain execution-time artifacts and are outside the scope of Azure synchronization.
 
 ---
 
-## BG-08 — Backgrounds with data set Shall Use Registries
+# Azure Translation
 
-Backgrounds shall follow the Registry rules defined in:
+Backgrounds shall be translated into Azure DevOps predecessor Work Items.
 
-```text
-04-registries.md
+If
+
+```json
+{
+   "workItemId":null
+}
 ```
 
-Physical SQL paths shall not appear within Background definitions.
-
----
-
-# Traceability
-
-Generated artifacts shall preserve traceability to their originating Background definition.
-
-Consumers should be able to identify:
-
-- Feature
-- Domain
-- Subdomain
-- Background Classification
-- Referencing Scenarios
-
-Example:
+Translator action
 
 ```text
-Feature:Invoice Generation
-
-Background:Invoice Generation Setup
-
-Scenario:Invoice with converted interval
+Create predecessor Work Item
 ```
+
+If
+
+```json
+{
+   "workItemId":812
+}
+```
+
+Translator action
+
+```text
+Update predecessor Work Item
+```
+
+The Translator is responsible for creating predecessor relationships between Test Cases and their associated Background Work Item.
 
 ---
 
-## BG-09 — Background Traceability Shall Be Preserved
+# Feature Synchronization
 
-Generated Shared Steps and Predecessor Work Items shall maintain traceability to their originating Feature and Background.
+Background references shall be preserved by the Canonical Model.
+
+Example
+
+```json
+{
+   "background":{
+
+      "workItemId":812
+
+   }
+
+}
+```
+
+Missing references shall be represented as:
+
+```json
+{
+   "background":{
+
+      "workItemId":null
+
+   }
+
+}
+```
+
+Consumers are responsible for creating or updating predecessor Work Items.
 
 ---
 
@@ -373,11 +213,16 @@ Generated Shared Steps and Predecessor Work Items shall maintain traceability to
 
 This strategy provides:
 
-- Clear separation between setup and environment preparation
-- Reduced duplication
-- Better traceability
-- Improved maintainability
-- Provider independence
-- Consistent Azure DevOps representation
+* Reusable Background definitions
 
-It preserves AEPE Gherkin semantics while enabling efficient translation into Azure DevOps artifacts.
+* Provider independent Canonical Models
+
+* Simplified Translator implementations
+
+* Bidirectional synchronization
+
+* Reduced Azure DevOps maintenance
+
+* Consistent Background handling across Features
+
+Backgrounds remain business-readable while Azure DevOps provides traceability and reporting capabilities.
