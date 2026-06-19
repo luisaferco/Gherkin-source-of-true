@@ -5,9 +5,10 @@ Feature: Credit Card Application Approval
   I want to apply for a credit card
   So that I can access a line of credit
 
-  Background:
+  Background: logging to credit card application page
     Given the customer is on the credit card application page
 
+  @TC:123445
   Scenario: Approve application for an eligible customer
     When the customer submits an application with:
       | Age          | 30      |
@@ -18,6 +19,7 @@ Feature: Credit Card Application Approval
     And a credit card account should be created
     And a welcome email should be sent to the customer
 
+  @TC:123446
   Scenario: Reject application due to low credit score
     When the customer submits an application with:
       | Age          | 30      |
@@ -33,7 +35,7 @@ Feature: Credit Card Application Approval
       | Income       | <Income>      |
       | Credit Score | <CreditScore> |
     Then the application status should be "Pending Review"
-    | datasource | CREDIT_CARD_BY_CUSTOMER |
+      | datasource | CREDIT_CARD_BY_CUSTOMER |
     And the application should be assigned to a credit analyst
 
     Examples:

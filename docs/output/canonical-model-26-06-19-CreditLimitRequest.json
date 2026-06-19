@@ -1,0 +1,183 @@
+{
+  "feature": {
+    "name": "Credit Limit Increase Request",
+    "classification": {
+      "domain": "INV",
+      "subdomain": "PAY",
+      "path": "INV/PAY"
+    }
+  },
+  "background": {
+    "workItemId": null,
+    "name": "BKGR_INV_PAY | Customer has an active credit card account",
+    "reusable": true,
+    "predecessor": true,
+    "steps": [
+      {
+        "keyword": "Given",
+        "text": "the customer has an active credit card account"
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "testCaseId": null,
+      "name": "Approve credit limit increase for an eligible customer",
+      "title": "TC_INV_PAY_001 | Approve credit limit increase for an eligible customer",
+      "type": "scenario",
+      "steps": [
+        {
+          "keyword": "When",
+          "text": "the customer requests a credit limit increase with:",
+          "datatable": {
+            "kind": "kv",
+            "rows": [
+              {
+                "key": "Current Limit",
+                "value": 5000
+              },
+              {
+                "key": "New Limit",
+                "value": 8000
+              },
+              {
+                "key": "Income",
+                "value": 7000
+              },
+              {
+                "key": "Credit Score",
+                "value": 780
+              }
+            ]
+          }
+        },
+        {
+          "keyword": "Then",
+          "text": "the credit limit increase request should be approved",
+          "datasources": [
+            "CREDIT_CARD_BY_CUSTOMER_ID.sql"
+          ]
+        },
+        {
+          "keyword": "And",
+          "text": "the credit card limit should be updated to \"8000\""
+        },
+        {
+          "keyword": "And",
+          "text": "a confirmation email should be sent to the customer"
+        }
+      ]
+    },
+    {
+      "testCaseId": null,
+      "name": "Reject credit limit increase due to low credit score",
+      "title": "TC_INV_PAY_002 | Reject credit limit increase due to low credit score",
+      "type": "scenario",
+      "steps": [
+        {
+          "keyword": "When",
+          "text": "the customer requests a credit limit increase with:",
+          "datatable": {
+            "kind": "kv",
+            "rows": [
+              {
+                "key": "Current Limit",
+                "value": 5000
+              },
+              {
+                "key": "New Limit",
+                "value": 10000
+              },
+              {
+                "key": "Income",
+                "value": 7000
+              },
+              {
+                "key": "Credit Score",
+                "value": 600
+              }
+            ]
+          }
+        },
+        {
+          "keyword": "Then",
+          "text": "the credit limit increase request should be rejected",
+          "datasources": [
+            "CREDIT_CARD_BY_CUSTOMER_ID.sql"
+          ]
+        },
+        {
+          "keyword": "And",
+          "text": "the rejection reason should be \"Credit score below minimum threshold\""
+        }
+      ]
+    },
+    {
+      "testCaseId": null,
+      "name": "Send credit limit increase request for manual review",
+      "title": "TC_INV_PAY_003 | Send credit limit increase request for manual review",
+      "type": "outline",
+      "steps": [
+        {
+          "keyword": "When",
+          "text": "the customer requests a credit limit increase with:",
+          "datatable": {
+            "kind": "kv",
+            "rows": [
+              {
+                "key": "Current Limit",
+                "value": "<CurrentLimit>"
+              },
+              {
+                "key": "New Limit",
+                "value": "<NewLimit>"
+              },
+              {
+                "key": "Income",
+                "value": "<Income>"
+              },
+              {
+                "key": "Credit Score",
+                "value": "<CreditScore>"
+              }
+            ]
+          }
+        },
+        {
+          "keyword": "Then",
+          "text": "the credit limit increase request status should be \"Pending Review\"",
+          "datasources": [
+            "CREDIT_CARD_BY_CUSTOMER_ID.sql"
+          ]
+        },
+        {
+          "keyword": "And",
+          "text": "the request should be assigned to a credit analyst"
+        }
+      ],
+      "dataset": {
+        "shared": false,
+        "rows": [
+          {
+            "CurrentLimit": 5000,
+            "NewLimit": 9000,
+            "Income": 4500,
+            "CreditScore": 670
+          },
+          {
+            "CurrentLimit": 6000,
+            "NewLimit": 10000,
+            "Income": 5000,
+            "CreditScore": 660
+          },
+          {
+            "CurrentLimit": 7000,
+            "NewLimit": 12000,
+            "Income": 5500,
+            "CreditScore": 680
+          }
+        ]
+      }
+    }
+  ]
+}

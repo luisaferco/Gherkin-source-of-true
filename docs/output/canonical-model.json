@@ -6,21 +6,20 @@
       "I want to apply for a credit card",
       "So that I can access a line of credit"
     ],
-
     "tags": [
       "Payment"
     ],
-
     "classification": {
       "domain": "INV",
-      "subdomain": "PYM",
-      "path": "INV-Invoices/PYM"
+      "subdomain": "PAY",
+      "path": "INV-Invoices/PAY"
     }
   },
-
   "background": {
-    "classification": "setup",
+    "workItemId": null,
+    "name": "PRE_INV_PAY_001 | Customer is on credit card application page",
     "reusable": true,
+    "predecessor": true,
     "steps": [
       {
         "keyword": "Given",
@@ -28,12 +27,10 @@
       }
     ]
   },
-
   "scenarios": [
     {
-
       "testCaseId": null,
-      "name": "Approve application for an eligible customer",
+      "title": "TC_INV_PAY_001 | Approve application for an eligible customer",
       "type": "scenario",
       "tags": [],
       "steps": [
@@ -75,11 +72,9 @@
         }
       ]
     },
-
     {
-
       "testCaseId": null,
-      "name": "Reject application due to low credit score",
+      "title": "TC_INV_PAY_002 | Reject application due to low credit score",
       "type": "scenario",
       "tags": [],
       "steps": [
@@ -103,11 +98,8 @@
               }
             ]
           }
-
         },
-
         {
-
           "keyword": "Then",
           "text": "the application should be rejected",
           "datasources": [
@@ -122,7 +114,7 @@
     },
     {
       "testCaseId": null,
-      "name": "Send application for manual review",
+      "title": "TC_INV_PYM_003 | Send application for manual review",
       "type": "outline",
       "tags": [],
       "steps": [

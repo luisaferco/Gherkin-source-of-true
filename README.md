@@ -32,8 +32,6 @@ Durante este ejercicio se definieron reglas de transformación para elementos co
 * Shared Steps
 * Shared Parameters
 * Queries (Datasource Registry)
-* Endpoints (Endpoint Registry)
-* Mensajes EDI
 * Data Tables
 
 El resultado es una arquitectura donde los archivos Feature describen únicamente la intención funcional, mientras que los detalles de implementación permanecen desacoplados y administrados mediante componentes reutilizables del repositorio.
