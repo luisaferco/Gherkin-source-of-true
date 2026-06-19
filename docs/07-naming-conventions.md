@@ -342,3 +342,22 @@ This strategy provides:
 - Reduced naming maintenance
 
 It ensures that generated artifacts remain understandable to both business and technical stakeholders while preserving their relationship to the originating Feature definitions.
+
+## NC-11 - Canonical Titles Shall Follow Naming Convention Rules
+
+Canonical Models shall preserve generated Test Case titles.
+
+Generated titles shall follow Naming Convention rules.
+
+
+Example for scenario name:
+
+```
+TC_INV_PYM_001 | Approve application for an eligible customer
+```
+
+Backgrounds shall follow:
+
+```
+PRE_INV_PYM_001 | Customer is on credit card application page
+```
